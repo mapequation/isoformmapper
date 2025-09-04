@@ -61,6 +61,60 @@ import {
   crest
 } from "./seaborn-schemes";
 
+// Englewood mural (5 first from a plugin to Illustrator, extended with glasbey)
+const mural_colors = [
+  "#afb581",
+  "#efab6a",
+  "#e78c6e",
+  "#838eab",
+  "#c4c0d5",
+  "#55c2ba",
+  "#55a26d",
+  "#ae8635",
+  "#8acaf3",
+  "#82d79e",
+  "#a68679",
+  "#a6aaef",
+  "#419eb2",
+  "#8aa29e",
+  "#aacac2",
+  "#ceaa9e",
+  "#8a9a45",
+  "#35a292",
+  "#8a9275",
+  "#75a6d7",
+  "#d7be61",
+  "#9eb6c6",
+  "#86ba71",
+  "#c29669",
+  "#79b696",
+  "#b2ce75",
+  "#8e8ace",
+  "#a6a2c2",
+  "#c67551",
+  "#69b6ca",
+  "#d7be92",
+  "#b2a24d",
+  "#79d2df",
+  "#aec2ef",
+  "#aecaa6",
+  "#79d7be",
+  "#f3aa92",
+  "#7596a2",
+  "#9aae96",
+  "#719a82",
+  "#69aaaa",
+  "#a28a5d",
+  "#82a26d",
+  "#aea282",
+  "#d2a251",
+  "#8ebaba",
+  "#a6b65d",
+  "#8aa2ba",
+  "#7592ca",
+  "#9a9a61",
+]
+
 const c3options = {
   saturation: 0.55,
   saturationEnd: 0.8,
@@ -72,13 +126,13 @@ const c3options = {
 
 const scheme = (
   (n: number) =>
-  (interpolator: (t: number) => string): string[] => {
-    const result = [];
-    for (let i = 0; i < n; i++) {
-      result.push(interpolator(i / (n - 1)));
+    (interpolator: (t: number) => string): string[] => {
+      const result = [];
+      for (let i = 0; i < n; i++) {
+        result.push(interpolator(i / (n - 1)));
+      }
+      return result;
     }
-    return result;
-  }
 )(21);
 
 export const COLOR_SCHEMES = {
@@ -109,6 +163,8 @@ export const COLOR_SCHEMES = {
   "C3 Rainbow": c3.colors(512, { scheme: "Rainbow", ...c3options }),
   "C3 Sinebow": c3.colors(512, { scheme: "Sinebow", ...c3options }),
   "C3 Viridis": c3.colors(512, { scheme: "Viridis", ...c3options }),
+  // natural
+  "Mural": mural_colors,
   // uniform
   Flare: flare,
   Crest: crest,
@@ -177,6 +233,7 @@ export const SCHEME_GROUPS: { [key: string]: SchemeName[] } = {
   Seaborn: ["Deep", "Muted", "Pastel", "Bright", "Dark", "Colorblind"],
   Matplotlib: ["Tableau20", "Tableau20b", "Tableau20c"],
   C3: ["C3 Turbo", "C3 Rainbow", "C3 Sinebow", "C3 Viridis"],
+  Natural: ["Mural"],
   Uniform: [
     "Flare",
     "Crest"
