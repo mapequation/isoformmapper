@@ -19,10 +19,8 @@ export default observer(function Layout() {
     <>
       <ListItemHeader color={headerColor}>Layout</ListItemHeader>
 
-      <ListItemButton
-        onClick={() => store.resetLayout()}
-        leftIcon={<MdRestartAlt />}
-      >
+      <ListItemButton onClick={() => store.resetLayout()}>
+        <MdRestartAlt />
         Sort modules
       </ListItemButton>
 
@@ -60,7 +58,7 @@ export default observer(function Layout() {
         max={6}
         valueLabelFormat={(value: number) => 2 ** (value - 1)}
         onChange={store.setMarginExponent}
-        isDisabled={store.zeroMargins}
+        disabled={store.zeroMargins}
       />
       <Slider
         label="Visible flow"
@@ -117,7 +115,7 @@ export default observer(function Layout() {
 
       <Slider
         label="Hierarchical opacity"
-        isDisabled={store.hierarchicalModules === "none"}
+        disabled={store.hierarchicalModules === "none"}
         value={store.hierarchicalModuleOpacity}
         min={0}
         max={1}
@@ -127,7 +125,7 @@ export default observer(function Layout() {
 
       <Slider
         label="Hierarchical offset"
-        isDisabled={store.hierarchicalModules !== "shadow"}
+        disabled={store.hierarchicalModules !== "shadow"}
         value={store.hierarchicalModuleOffset}
         min={1}
         max={10}
@@ -153,62 +151,62 @@ export default observer(function Layout() {
       {store.diagram.children.some((network) => network.isBipartite) && (
         <Switch
           label="Show bipartite nodes"
-          isChecked={store.showBipartiteNodes}
+          checked={store.showBipartiteNodes}
           onChange={store.setShowBipartiteNodes}
         />
       )}
       <Switch
         label="Zero vertical gaps"
-        isChecked={store.zeroMargins}
+        checked={store.zeroMargins}
         onChange={store.setZeroMargins}
       />
       <Switch
         label="Bottom align"
-        isChecked={store.verticalAlign === "bottom"}
+        checked={store.verticalAlign === "bottom"}
         onChange={(value: boolean) =>
           store.setVerticalAlign(value ? "bottom" : "justify")
         }
       />
       <Switch
         label="Module ids"
-        isChecked={store.showModuleId}
+        checked={store.showModuleId}
         onChange={store.setShowModuleId}
       />
       <Switch
         label="Module names"
-        isChecked={store.showModuleNames}
+        checked={store.showModuleNames}
         onChange={store.setShowModuleNames}
       />
       <Switch
         label="Multi-line module names"
-        isChecked={store.multilineModuleNames}
+        checked={store.multilineModuleNames}
         onChange={store.setMultilineModuleNames}
       />
       {store.diagram.children.some((network) => network.isHigherOrder) && (
         <Switch
           label="Aggregate state names"
-          isChecked={store.aggregateStateNames}
+          checked={store.aggregateStateNames}
           onChange={store.setAggregateStateNames}
         />
       )}
       <Switch
         label="Title-case module names"
-        isChecked={store.titleCaseModuleNames}
+        checked={store.titleCaseModuleNames}
         onChange={store.setTitleCaseModuleNames}
       />
       <Switch
         label="Network names"
-        isChecked={store.showNetworkNames}
+        checked={store.showNetworkNames}
         onChange={store.setShowNetworkNames}
       />
       <Switch
         label="Adaptive font size"
-        isChecked={store.adaptiveFontSize}
+        checked={store.adaptiveFontSize}
         onChange={store.setAdaptiveFontSize}
       />
       <Switch
         label="Drop shadow"
-        isChecked={store.dropShadow}
+        checked={store.dropShadow}
         onChange={store.setDropShadow}
       />
     </>

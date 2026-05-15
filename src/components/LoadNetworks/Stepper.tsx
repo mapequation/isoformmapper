@@ -1,4 +1,4 @@
-import { Step, Steps } from "chakra-ui-steps";
+import { Steps } from "@chakra-ui/react";
 
 export default function Stepper({
   activeStep,
@@ -7,36 +7,50 @@ export default function Stepper({
   activeStep: number;
   acceptedFormats: string;
 }) {
+  const steps = [
+    {
+      title: "Run Infomap",
+      description: (
+        <a href="//mapequation.org/infomap">Infomap Online or load net-files</a>
+      ),
+    },
+    {
+      title: "Load network partitions",
+      description: (
+        <a href="//mapequation.org/infomap/#Output">
+          Formats: {acceptedFormats}
+        </a>
+      ),
+    },
+    {
+      title: "Create alluvial diagram",
+      description: "Highlight partition differences",
+    },
+  ];
+
   return (
-    <Steps
-      activeStep={activeStep}
-      // Uncomment this when chakra-ui-steps is updated to chakra-ui v2
-      //labelOrientation="vertical"
-      colorScheme="blue"
-      sx={{ margin: "1em auto 2em", width: "90%" }}
+    <Steps.Root
+      step={activeStep}
+      count={steps.length}
+      colorPalette="blue"
+      mx="auto"
+      my="1em"
+      w="90%"
     >
-      <Step
-        label="Run Infomap"
-        // @ts-ignore
-        description={
-          <a href="//mapequation.org/infomap">
-            Infomap Online or load net-files
-          </a>
-        }
-      />
-      <Step
-        label="Load network partitions"
-        // @ts-ignore
-        description={
-          <a href="//mapequation.org/infomap/#Output">
-            Formats: {acceptedFormats}
-          </a>
-        }
-      />
-      <Step
-        label="Create alluvial diagram"
-        description="Highlight partition differences"
-      />
-    </Steps>
+      <Steps.List>
+        {steps.map((step, index) => (
+          <Steps.Item key={index} index={index} title={step.title}>
+            <Steps.Trigger>
+              <Steps.Indicator />
+              <div>
+                <Steps.Title>{step.title}</Steps.Title>
+                <Steps.Description>{step.description}</Steps.Description>
+              </div>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+        ))}
+      </Steps.List>
+    </Steps.Root>
   );
 }

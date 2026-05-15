@@ -1,23 +1,29 @@
-import { useToast, UseToastOptions } from "@chakra-ui/react";
 import { useCallback } from "react";
+import { toaster } from "../components/ui/toaster";
 
-export type OnError = (props: UseToastOptions) => void;
+export type ToastOptions = {
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  type?: "success" | "error" | "warning" | "info" | "loading";
+  duration?: number;
+  closable?: boolean;
+};
+
+export type OnError = (props: ToastOptions) => void;
 
 export function useError(warn = false): OnError {
-  const toast = useToast();
-
   return useCallback(
     ({ title, description, ...props }) => {
-      if (warn) console.warn(description);
-      toast({
+      if (warn && typeof description === "string") console.warn(description);
+      toaster.create({
         title,
         description,
-        status: "error",
+        type: "error",
         duration: 5000,
-        isClosable: true,
+        closable: true,
         ...props,
       });
     },
-    [warn, toast]
+    [warn]
   );
 }

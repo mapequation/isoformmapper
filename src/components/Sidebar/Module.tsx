@@ -1,11 +1,4 @@
-import {
-  ButtonGroup,
-  Editable,
-  EditableInput,
-  EditablePreview,
-  Kbd,
-  ListItem,
-} from "@chakra-ui/react";
+import { ButtonGroup, Editable, Kbd, List } from "@chakra-ui/react";
 import { observer } from "mobx-react";
 import { useContext } from "react";
 import {
@@ -36,119 +29,115 @@ export default observer(function Module({
 
       {selectedModule != null ? (
         <>
-          <ListItem>
-            <ButtonGroup isAttached w="100%">
+          <List.Item>
+            <ButtonGroup attached w="100%">
               <Button
                 onClick={() => store.moveSelectedModule("up")}
-                isDisabled={store.selectedModule === null}
-                leftIcon={<MdOutlineArrowUpward />}
+                disabled={store.selectedModule === null}
               >
+                <MdOutlineArrowUpward />
                 Move up
                 <Kbd ml="auto">W</Kbd>
               </Button>
               <Button
                 onClick={() => store.moveSelectedModule("down")}
-                isDisabled={store.selectedModule === null}
-                leftIcon={<MdOutlineArrowDownward />}
+                disabled={store.selectedModule === null}
               >
+                <MdOutlineArrowDownward />
                 Move down
                 <Kbd ml="auto">S</Kbd>
               </Button>
             </ButtonGroup>
-          </ListItem>
-          <ListItem>
-            <ButtonGroup isAttached w="100%">
+          </List.Item>
+          <List.Item>
+            <ButtonGroup attached w="100%">
               <Button
                 onClick={() => store.moveNetwork("left")}
-                isDisabled={store.selectedModule === null}
-                leftIcon={<MdOutlineArrowBack />}
+                disabled={store.selectedModule === null}
               >
+                <MdOutlineArrowBack />
                 Move left
                 <Kbd ml="auto">A</Kbd>
               </Button>
               <Button
                 onClick={() => store.moveNetwork("right")}
-                isDisabled={store.selectedModule === null}
-                leftIcon={<MdOutlineArrowForward />}
+                disabled={store.selectedModule === null}
               >
+                <MdOutlineArrowForward />
                 Move right
                 <Kbd ml="auto">D</Kbd>
               </Button>
             </ButtonGroup>
-          </ListItem>
-          <ListItem>
-            <ButtonGroup isAttached w="100%">
+          </List.Item>
+          <List.Item>
+            <ButtonGroup attached w="100%">
               <Button
                 onClick={() => store.expand(selectedModule)}
-                isDisabled={selectedModule.isLeafModule}
-                leftIcon={<MdUnfoldMore />}
+                disabled={selectedModule.isLeafModule}
               >
+                <MdUnfoldMore />
                 Expand
                 <Kbd ml="auto">E</Kbd>
               </Button>
               <Button
                 onClick={() => store.regroup(selectedModule)}
-                isDisabled={selectedModule.isTopModule}
-                leftIcon={<MdUnfoldLess />}
+                disabled={selectedModule.isTopModule}
               >
+                <MdUnfoldLess />
                 Contract
                 <Kbd ml="auto">C</Kbd>
               </Button>
             </ButtonGroup>
-          </ListItem>
+          </List.Item>
 
-          <ListItemButton
-            onClick={onModuleViewClick}
-            leftIcon={<MdTableRows />}
-          >
+          <ListItemButton onClick={onModuleViewClick}>
+            <MdTableRows />
             Show node list
           </ListItemButton>
 
-          <ListItem>
+          <List.Item>
             <Label>Network</Label>
-            <Editable
+            <Editable.Root
               w="50%"
               display="inline-block"
               defaultValue={selectedModule.networkName || "Click to set name"}
-              onSubmit={(value) => {
-                store.setNetworkName(selectedModule.networkId, value);
+              onValueCommit={(details) => {
+                store.setNetworkName(selectedModule.networkId, details.value);
                 store.setEditMode(false);
               }}
-              onCancel={() => store.setEditMode(false)}
-              onEdit={() => store.setEditMode(true)}
+              onEditChange={(details) => store.setEditMode(details.edit)}
             >
-              <EditablePreview />
-              <EditableInput />
-            </Editable>
-          </ListItem>
-          <ListItem>
+              <Editable.Preview />
+              <Editable.Input />
+            </Editable.Root>
+          </List.Item>
+          <List.Item>
             <Label>Codelength</Label>
             {selectedModule.networkCodelength.toPrecision(3) + " bits"}
-          </ListItem>
-          <ListItem>
+          </List.Item>
+          <List.Item>
             <Label>Module id</Label>
             {selectedModule.moduleId}
-          </ListItem>
-          <ListItem>
+          </List.Item>
+          <List.Item>
             <Label>Module name</Label>
-            <Editable
+            <Editable.Root
               w="50%"
               display="inline-block"
               defaultValue={selectedModule.name || "Click to set name"}
-              onSubmit={(value) => {
-                store.setModuleName(selectedModule, value);
+              onValueCommit={(details) => {
+                store.setModuleName(selectedModule, details.value);
                 store.setEditMode(false);
               }}
-              onCancel={() => store.setEditMode(false)}
-              onEdit={() => store.setEditMode(true)}
+              onEditChange={(details) => store.setEditMode(details.edit)}
             >
-              <EditablePreview />
-              <EditableInput />
-            </Editable>
-          </ListItem>
+              <Editable.Preview />
+              <Editable.Input />
+            </Editable.Root>
+          </List.Item>
         </>
       ) : (
-        <ListItem>No module selected. Click on any module.</ListItem>
+        <List.Item>No module selected. Click on any module.</List.Item>
       )}
     </>
   );

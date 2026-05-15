@@ -1,25 +1,12 @@
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import {
   Button,
   Checkbox,
   Flex,
   Input,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useColorModeValue,
-  useToast,
+  Table as CkTable,
 } from "@chakra-ui/react";
 import {
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -27,26 +14,36 @@ import {
   PaginationState,
   RowSelectionState,
   SortingState,
-  useTableInstance,
+  useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
 import FileSaver from "file-saver";
 import { observer } from "mobx-react";
 import { useContext, useEffect, useMemo, useState } from "react";
+import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import type { LeafNode } from "../../alluvial";
 import useDebounce from "../../hooks/useDebounce";
 import { StoreContext } from "../../store";
 import ColorSchemeSelect from "../Sidebar/ColorSchemeSelect";
 import Swatch from "../Sidebar/Swatch";
+import { useColorModeValue } from "../ui/color-mode";
+import {
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import { toaster } from "../ui/toaster";
 import Pagination from "./Pagination";
-import { columns, table } from "./table";
+import { columns } from "./table";
 
 export default observer(function NodeList({
   onClose,
 }: {
   onClose: () => void;
 }) {
-  const toast = useToast();
   const store = useContext(StoreContext);
   const bg = useColorModeValue("white", "gray.700");
   const [includeInsignificant, setIncludeInsignificant] = useState(true);
@@ -78,7 +75,7 @@ export default observer(function NodeList({
       return state;
     });
 
-  const instance = useTableInstance(table, {
+  const instance = useReactTable<LeafNode>({
     data,
     columns,
     state: { pagination, sorting, rowSelection, columnVisibility },
@@ -98,7 +95,7 @@ export default observer(function NodeList({
   const nameColumn = useMemo(() => instance.getColumn("name"), [instance]);
 
   useEffect(
-    () => nameColumn.setFilterValue(debouncedSearch),
+    () => nameColumn?.setFilterValue(debouncedSearch),
     [nameColumn, debouncedSearch]
   );
 
@@ -132,8 +129,8 @@ export default observer(function NodeList({
     if (!navigator.clipboard) return;
     const names = getNames();
     await navigator.clipboard.writeText(names);
-    toast({
-      status: "success",
+    toaster.create({
+      type: "success",
       description: "Names copied to clipboard",
     });
   };
@@ -142,123 +139,134 @@ export default observer(function NodeList({
   const noNodesSelected = instance.getSelectedRowModel().flatRows.length === 0;
 
   return (
-    <>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{"Module " + selectedModule.moduleId}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody minH="35em">
-          <Input
-            placeholder="Search names..."
-            maxW="50%"
-            autoFocus
-            tabIndex={0}
-            onFocus={() => store.setEditMode(true)}
-            onBlur={() => store.setEditMode(false)}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{"Module " + selectedModule.moduleId}</DialogTitle>
+      </DialogHeader>
+      <DialogCloseTrigger />
+      <DialogBody minH="35em">
+        <Input
+          placeholder="Search names..."
+          maxW="50%"
+          autoFocus
+          tabIndex={0}
+          onFocus={() => store.setEditMode(true)}
+          onBlur={() => store.setEditMode(false)}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <CkTable.Root variant="outline" size="sm" colorPalette="gray" mt={4}>
+          <CkTable.Header bg={bg}>
+            {instance.getHeaderGroups().map((headerGroup) => (
+              <CkTable.Row key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <CkTable.ColumnHeader
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    textAlign={
+                      numericColumns.includes(header.id) ? "end" : undefined
+                    }
+                  >
+                    {!header.isPlaceholder && (
+                      <span
+                        style={{ cursor: "pointer" }}
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        {{
+                          asc: <LuChevronUp />,
+                          desc: <LuChevronDown />,
+                        }[header.column.getIsSorted() as string] ?? null}
+                      </span>
+                    )}
+                  </CkTable.ColumnHeader>
+                ))}
+              </CkTable.Row>
+            ))}
+          </CkTable.Header>
+          <CkTable.Body className={`table-update-${store.updateFlag}`}>
+            {instance.getRowModel().rows.map((row) => (
+              <CkTable.Row key={row.id} w="100%">
+                {row.getVisibleCells().map((cell) => (
+                  <CkTable.Cell
+                    key={cell.id}
+                    textAlign={
+                      numericColumns.includes(cell.column.id)
+                        ? "end"
+                        : undefined
+                    }
+                    css={{
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      maxWidth: "25em",
+                    }}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </CkTable.Cell>
+                ))}
+              </CkTable.Row>
+            ))}
+          </CkTable.Body>
+        </CkTable.Root>
+        <Pagination instance={instance} />
+
+        <ColorSchemeSelect w="300px" mt={4} />
+
+        <Flex
+          mt={4}
+          gap={1}
+          wrap="wrap"
+          pointerEvents={noNodesSelected ? "none" : undefined}
+          filter={noNodesSelected ? "grayscale(80%)" : undefined}
+        >
+          <Swatch
+            color={defaultHighlightColor}
+            onClick={() =>
+              store.colorSelectedNodes(
+                getSelectedNodes(),
+                defaultHighlightColor
+              )
+            }
           />
-          <Table variant="striped" size="sm" colorScheme="gray" mt={4}>
-            <Thead bg={bg}>
-              {instance.getHeaderGroups().map((headerGroup) => (
-                <Tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <Th
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      isNumeric={numericColumns.includes(header.id)}
-                    >
-                      {!header.isPlaceholder && (
-                        <span
-                          style={{ cursor: "pointer" }}
-                          onClick={header.column.getToggleSortingHandler()}
-                        >
-                          {header.renderHeader()}
-                          {{
-                            asc: <ChevronUpIcon />,
-                            desc: <ChevronDownIcon />,
-                          }[header.column.getIsSorted() as string] ?? null}
-                        </span>
-                      )}
-                    </Th>
-                  ))}
-                </Tr>
-              ))}
-            </Thead>
-            <Tbody className={`table-update-${store.updateFlag}`}>
-              {instance.getRowModel().rows.map((row) => (
-                <Tr key={row.id} w="100%">
-                  {row.getVisibleCells().map((cell) => (
-                    <Td
-                      key={cell.id}
-                      isNumeric={numericColumns.includes(cell.column.id)}
-                      // TODO make this nicer
-                      sx={{
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        maxW: "25em",
-                      }}
-                    >
-                      {cell.renderCell()}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          <Pagination instance={instance} />
-
-          <ColorSchemeSelect w="300px" mt={4} />
-
-          <Flex
-            mt={4}
-            gap={1}
-            wrap="wrap"
-            pointerEvents={noNodesSelected ? "none" : undefined}
-            filter={noNodesSelected ? "grayscale(80%)" : undefined}
-          >
+          {store.selectedScheme.slice(0, 21).map((schemeColor, i) => (
             <Swatch
-              color={defaultHighlightColor}
+              key={`${i}-${schemeColor}`}
+              color={schemeColor}
               onClick={() =>
-                store.colorSelectedNodes(
-                  getSelectedNodes(),
-                  defaultHighlightColor
-                )
+                store.colorSelectedNodes(getSelectedNodes(), schemeColor)
               }
             />
-            {store.selectedScheme.slice(0, 21).map((schemeColor, i) => (
-              <Swatch
-                key={`${i}-${schemeColor}`}
-                color={schemeColor}
-                onClick={() =>
-                  store.colorSelectedNodes(getSelectedNodes(), schemeColor)
-                }
-              />
-            ))}
-          </Flex>
-        </ModalBody>
-        <ModalFooter>
-          <Button mr={2} onClick={downloadNames}>
-            Download names
+          ))}
+        </Flex>
+      </DialogBody>
+      <DialogFooter>
+        <Button mr={2} onClick={downloadNames}>
+          Download names
+        </Button>
+        {navigator.clipboard != null && (
+          <Button mr={2} onClick={copyNames}>
+            Copy names to clipboard
           </Button>
-          {navigator.clipboard != null && (
-            <Button mr={2} onClick={copyNames}>
-              Copy names to clipboard
-            </Button>
-          )}
-          <Checkbox
-            isChecked={includeInsignificant}
-            onChange={(event) => setIncludeInsignificant(event.target?.checked)}
-            mr="auto"
-          >
-            Include insignificant
-          </Checkbox>
-          <Button isActive onClick={onClose}>
-            Close
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </>
+        )}
+        <Checkbox.Root
+          checked={includeInsignificant}
+          onCheckedChange={(details) =>
+            setIncludeInsignificant(details.checked === true)
+          }
+          mr="auto"
+        >
+          <Checkbox.HiddenInput />
+          <Checkbox.Control />
+          <Checkbox.Label>Include insignificant</Checkbox.Label>
+        </Checkbox.Root>
+        <Button data-active="" onClick={onClose}>
+          Close
+        </Button>
+      </DialogFooter>
+    </DialogContent>
   );
 });

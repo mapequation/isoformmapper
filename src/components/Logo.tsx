@@ -1,4 +1,5 @@
-import { HStack, useColorModeValue } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import ToggleColorMode from "./ToggleColorMode";
 
 export default function Logo({ showVersion = false, long = false }) {
@@ -7,7 +8,7 @@ export default function Logo({ showVersion = false, long = false }) {
 
   return (
     <HStack w="100%" justify="space-between" align="center">
-      <HStack justify="flex-start" align="center" spacing={3}>
+      <HStack justify="flex-start" align="center" gap={3}>
         <a href="//mapequation.org">
           <img
             alt=""
@@ -30,7 +31,7 @@ export default function Logo({ showVersion = false, long = false }) {
           </span>
           {showVersion && (
             <span style={{ color }}>
-              {" v" + process.env.REACT_APP_VERSION}
+              {" v" + import.meta.env.VITE_APP_VERSION}
             </span>
           )}
         </div>

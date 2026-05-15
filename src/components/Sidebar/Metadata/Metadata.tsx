@@ -1,4 +1,4 @@
-import { ListItem } from "@chakra-ui/react";
+import { List } from "@chakra-ui/react";
 import { observer } from "mobx-react";
 import { useContext } from "react";
 import type { Network } from "../../../alluvial";
@@ -29,7 +29,7 @@ export default observer(function Metadata() {
     <>
       <ListItemHeader color={headerColor}>Network metadata</ListItemHeader>
 
-      <ListItem>
+      <List.Item>
         {selectedModule != null ? (
           network?.haveMetadata ? (
             <>
@@ -47,7 +47,7 @@ export default observer(function Metadata() {
         ) : (
           "Select a module to see network metadata"
         )}
-      </ListItem>
+      </List.Item>
     </>
   );
 });

@@ -1,5 +1,6 @@
-import { Box, forwardRef, useColorModeValue } from "@chakra-ui/react";
-import { PropsWithChildren } from "react";
+import { Box } from "@chakra-ui/react";
+import { forwardRef, PropsWithChildren } from "react";
+import { useColorModeValue } from "../ui/color-mode";
 
 type SwatchProps = PropsWithChildren<{
   color: string;
@@ -7,7 +8,7 @@ type SwatchProps = PropsWithChildren<{
   onClick?: () => void;
 }>;
 
-const Swatch = forwardRef<SwatchProps, "div">(function Swatch(
+const Swatch = forwardRef<HTMLButtonElement, SwatchProps>(function Swatch(
   { color, isSelected, onClick, children },
   ref
 ) {

@@ -1,34 +1,50 @@
 import { Checkbox } from "@chakra-ui/react";
-import { createTable } from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
 import type { LeafNode } from "../../alluvial";
 import Name from "./Name";
 import Path from "./Path";
 
-export const table = createTable().setRowType<LeafNode>();
+const columnHelper = createColumnHelper<LeafNode>();
 
 export const columns = [
-  table.createDisplayColumn({
+  columnHelper.display({
     id: "selection",
-    header: ({ instance }) => (
-      <Checkbox
-        {...{
-          isChecked: instance.getIsAllRowsSelected(),
-          isIndeterminate: instance.getIsSomeRowsSelected(),
-          onChange: instance.getToggleAllRowsSelectedHandler(),
-        }}
-      />
+    header: ({ table }) => (
+      <Checkbox.Root
+        checked={
+          table.getIsAllRowsSelected()
+            ? true
+            : table.getIsSomeRowsSelected()
+            ? "indeterminate"
+            : false
+        }
+        onCheckedChange={(details) =>
+          table.toggleAllRowsSelected(details.checked === true)
+        }
+      >
+        <Checkbox.HiddenInput />
+        <Checkbox.Control />
+      </Checkbox.Root>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        {...{
-          isChecked: row.getIsSelected(),
-          isIndeterminate: row.getIsSomeSelected(),
-          onChange: row.getToggleSelectedHandler(),
-        }}
-      />
+      <Checkbox.Root
+        checked={
+          row.getIsSelected()
+            ? true
+            : row.getIsSomeSelected()
+            ? "indeterminate"
+            : false
+        }
+        onCheckedChange={(details) =>
+          row.toggleSelected(details.checked === true)
+        }
+      >
+        <Checkbox.HiddenInput />
+        <Checkbox.Control />
+      </Checkbox.Root>
     ),
   }),
-  table.createDataColumn("name", {
+  columnHelper.accessor("name", {
     header: "Name",
     filterFn: "includesString",
     cell: (props) => (
@@ -38,14 +54,14 @@ export const columns = [
       />
     ),
   }),
-  table.createDataColumn("treePath", {
+  columnHelper.accessor("treePath", {
     header: "Path",
     cell: (props) => <Path path={props.getValue()} />,
   }),
-  table.createDataColumn("nodeId", { header: "Id" }),
-  table.createDataColumn("stateId", { header: "State Id" }),
-  table.createDataColumn("layerId", { header: "Layer" }),
-  table.createDataColumn("flow", {
+  columnHelper.accessor("nodeId", { header: "Id" }),
+  columnHelper.accessor("stateId", { header: "State Id" }),
+  columnHelper.accessor("layerId", { header: "Layer" }),
+  columnHelper.accessor("flow", {
     header: "Flow",
     cell: (props) => props.getValue().toPrecision(3),
   }),

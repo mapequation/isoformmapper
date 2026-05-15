@@ -104,7 +104,8 @@ const Module = observer(function Module({
           transition={transition}
         >
           <motion.text
-            animate={{ fontSize: actualFontSize, dy }}
+            dy={dy}
+            style={{ fontSize: actualFontSize }}
             transition={transition}
             textAnchor="middle"
             fontWeight={600}
@@ -129,7 +130,7 @@ const Module = observer(function Module({
           transition={transition}
         >
           <motion.text
-            animate={{ fontSize: actualFontSize }}
+            style={{ fontSize: actualFontSize }}
             transition={transition}
             textAnchor={module.textAnchor}
             strokeWidth={0}

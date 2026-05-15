@@ -1,4 +1,5 @@
-import { Box, Modal, Slide, useColorModeValue } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import { observer } from "mobx-react";
 import { useContext, useState } from "react";
 import useEventListener from "../hooks/useEventListener";
@@ -9,12 +10,14 @@ import LoadNetworks from "./LoadNetworks";
 import Logo from "./Logo";
 import NodeList from "./NodeList";
 import Sidebar from "./Sidebar";
+import { useColorModeValue } from "./ui/color-mode";
+import { DialogRoot } from "./ui/dialog";
 
 export const drawerWidth = 350;
 
 export default observer(function App() {
   const store = useContext(StoreContext);
-  const bg = useColorModeValue("white", "var(--chakra-colors-gray-800)");
+  const bg = useColorModeValue("white", "var(--chakra-colors-gray-900)");
   const [isLoadOpen, setIsLoadOpen] = useState(true);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isExplorerOpen, setIsExplorerOpen] = useState(false);
@@ -51,42 +54,72 @@ export default observer(function App() {
 
   return (
     <>
-      <Modal size="5xl" isCentered isOpen={isLoadOpen} onClose={onLoadClose}>
+      <DialogRoot
+        size="xl"
+        placement="center"
+        open={isLoadOpen}
+        onOpenChange={(e) => !e.open && onLoadClose()}
+      >
         <LoadNetworks onClose={onLoadClose} />
-      </Modal>
+      </DialogRoot>
 
-      <Modal
-        size="2xl"
+      <DialogRoot
+        size="xl"
         scrollBehavior="inside"
-        isOpen={isHelpOpen}
-        onClose={onHelpClose}
+        placement="center"
+        open={isHelpOpen}
+        onOpenChange={(e) => !e.open && onHelpClose()}
       >
         <Documentation onClose={onHelpClose} />
-      </Modal>
+      </DialogRoot>
 
-      <Modal size="5xl" isOpen={isExplorerOpen} onClose={onExplorerClose}>
+      <DialogRoot
+        size="xl"
+        placement="center"
+        open={isExplorerOpen}
+        onOpenChange={(e) => !e.open && onExplorerClose()}
+      >
         {isExplorerOpen && <NodeList onClose={onExplorerClose} />}
-      </Modal>
+      </DialogRoot>
 
       <Diagram />
 
-      <Slide
-        in={isLoadOpen}
-        direction="top"
-        style={{ height: "6rem", zIndex: 1500 }}
+      <motion.div
+        initial={false}
+        animate={{ y: isLoadOpen ? 0 : "-100%" }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "6rem",
+          zIndex: 1500,
+        }}
       >
         <Box px={10} display="flex" alignItems="center" h="6rem" bg={bg}>
           <Logo long />
         </Box>
-      </Slide>
+      </motion.div>
 
-      <Slide in={!isLoadOpen} style={{ width: drawerWidth }}>
+      <motion.div
+        initial={false}
+        animate={{ x: !isLoadOpen ? 0 : "100%" }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        style={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          width: drawerWidth,
+          height: "100vh",
+        }}
+      >
         <Sidebar
           onLoadClick={openLoad}
           onAboutClick={openHelp}
           onModuleViewClick={openExplorer}
         />
-      </Slide>
+      </motion.div>
     </>
   );
 });

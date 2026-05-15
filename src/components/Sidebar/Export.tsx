@@ -25,11 +25,8 @@ export default observer(function Export() {
     <>
       <ListItemHeader color={headerColor}>Export</ListItemHeader>
 
-      <ListItemButton
-        onClick={downloadSvg}
-        variant="link"
-        leftIcon={<MdFileDownload />}
-      >
+      <ListItemButton onClick={downloadSvg} variant="ghost">
+        <MdFileDownload />
         Download SVG
       </ListItemButton>
     </>

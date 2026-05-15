@@ -24,13 +24,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
+          node-version: "24"
           cache: npm
 
+      - run: npm install --package-lock-only
       - run: npm ci
 
       - run: npm run build
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
 
       - run: touch build/.nojekyll
 

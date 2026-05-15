@@ -76,7 +76,7 @@ export default React.memo(function ModuleTooltip({
           />
         )}
 
-        <Text fontSize="xs" color="#444" align="center" mt={3} mb={2}>
+        <Text fontSize="xs" color="#444" textAlign="center" mt={3} mb={2}>
           {numNodes < maxNodes
             ? "Largest nodes"
             : bins[0].length > maxNodes

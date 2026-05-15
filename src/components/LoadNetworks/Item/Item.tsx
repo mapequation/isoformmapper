@@ -1,4 +1,5 @@
-import { Box, Progress, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Progress, Text } from "@chakra-ui/react";
+import { useColorModeValue } from "../../ui/color-mode";
 import { parseTree } from "@mapequation/infomap-parser";
 import { useInfomap } from "@mapequation/infomap-react";
 import { observer } from "mobx-react";
@@ -29,8 +30,8 @@ export default observer(function Item({ file }: { file: NetworkFile }) {
   const bg = useColorModeValue("white", "gray.600");
   const fg = useColorModeValue("gray.800", "whiteAlpha.900");
   const fill = useColorModeValue(
-    "var(--chakra-colors-blackAlpha-400)",
-    "var(--chakra-colors-whiteAlpha-400)"
+    "var(--chakra-colors-black-alpha-400)",
+    "var(--chakra-colors-white-alpha-400)"
   );
   const { state, dispatch } = useContext(LoadContext);
   const { identifier } = useContext(StoreContext);
@@ -165,7 +166,13 @@ export default observer(function Item({ file }: { file: NetworkFile }) {
             )}
           </Box>
 
-          {running && <Progress value={progress} size="xs" mb={-2} mt={1} />}
+          {running && (
+            <Progress.Root value={progress} size="xs" mb={-2} mt={1}>
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
+          )}
         </Box>
       </Box>
     </ReorderItem>

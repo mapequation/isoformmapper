@@ -29,7 +29,7 @@ export default observer(function Categorical({
         data={data.counts}
         style={{ color: "#333" }}
         onClick={({ activeLabel }) => {
-          if (activeLabel) actions.set(activeLabel, color);
+          if (activeLabel) actions.set(String(activeLabel), color);
         }}
       >
         <XAxis dataKey="category" />
@@ -46,7 +46,7 @@ export default observer(function Categorical({
         </Bar>
       </BarChart>
 
-      <ButtonGroup isAttached w="100%" mt={1}>
+      <ButtonGroup attached w="100%" mt={1}>
         <Button
           onClick={() => store.colorCategoricalMetadata(name, map)}
           justifyContent="center"

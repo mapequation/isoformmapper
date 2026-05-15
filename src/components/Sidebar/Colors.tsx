@@ -1,4 +1,4 @@
-import { ButtonGroup, Flex, Kbd, ListItem, Text } from "@chakra-ui/react";
+import { ButtonGroup, Flex, Kbd, List, Text } from "@chakra-ui/react";
 import { observer } from "mobx-react";
 import { useContext } from "react";
 import { IoMdColorFill } from "react-icons/io";
@@ -42,7 +42,7 @@ export default observer(function Colors() {
     <>
       <ListItemHeader color={headerColor}>Colors</ListItemHeader>
 
-      <ListItem>
+      <List.Item>
         <Label>Color scheme</Label>
         <ColorSchemeSelect />
 
@@ -65,31 +65,31 @@ export default observer(function Colors() {
             </Swatch>
           ))}
         </Flex>
-      </ListItem>
+      </List.Item>
 
-      <ListItem>
-        <ButtonGroup isAttached w="100%">
+      <List.Item>
+        <ButtonGroup attached w="100%">
           <Button
             onClick={() => store.colorModule(selectedModule!, color)}
-            isDisabled={store.selectedModule === null}
+            disabled={store.selectedModule === null}
             justifyContent="center"
-            leftIcon={<IoMdColorFill />}
           >
+            <IoMdColorFill />
             Paint
             <Kbd ml={8}>P</Kbd>
           </Button>
           <Button
             onClick={() => store.clearColors()}
-            leftIcon={<MdClear />}
             justifyContent="center"
-            colorScheme="red"
+            colorPalette="red"
           >
+            <MdClear />
             Clear all
           </Button>
         </ButtonGroup>
-      </ListItem>
+      </List.Item>
 
-      <ListItem>
+      <List.Item>
         <Text
           color={headerColor}
           fontWeight={600}
@@ -100,10 +100,10 @@ export default observer(function Colors() {
         >
           By similarity
         </Text>
-        <ButtonGroup isAttached w="100%" mt={1}>
+        <ButtonGroup attached w="100%" mt={1}>
           <Button
             onClick={() => store.colorMatchingModules(selectedModule!, color)}
-            isDisabled={store.selectedModule === null}
+            disabled={store.selectedModule === null}
             justifyContent="center"
           >
             Paint modules
@@ -117,9 +117,9 @@ export default observer(function Colors() {
             Paint all
           </Button>
         </ButtonGroup>
-      </ListItem>
+      </List.Item>
 
-      <ListItem>
+      <List.Item>
         <Text
           color={headerColor}
           fontWeight={600}
@@ -130,10 +130,10 @@ export default observer(function Colors() {
         >
           By node assignments
         </Text>
-        <ButtonGroup isAttached w="100%" mt={1}>
+        <ButtonGroup attached w="100%" mt={1}>
           <Button
             onClick={() => store.colorNodesInModule(selectedModule!, color)}
-            isDisabled={store.selectedModule === null}
+            disabled={store.selectedModule === null}
             justifyContent="center"
           >
             Paint modules
@@ -147,9 +147,9 @@ export default observer(function Colors() {
             Paint all
           </Button>
         </ButtonGroup>
-      </ListItem>
+      </List.Item>
 
-      <ListItem>
+      <List.Item>
         <Text
           color={headerColor}
           fontWeight={600}
@@ -160,10 +160,10 @@ export default observer(function Colors() {
         >
           By module id
         </Text>
-        <ButtonGroup isAttached w="100%" mt={1}>
+        <ButtonGroup attached w="100%" mt={1}>
           <Button
             onClick={() => store.colorModuleIds(selectedModule!, color)}
-            isDisabled={store.selectedModule === null}
+            disabled={store.selectedModule === null}
             justifyContent="center"
           >
             Paint modules
@@ -177,10 +177,10 @@ export default observer(function Colors() {
             Paint all
           </Button>
         </ButtonGroup>
-      </ListItem>
+      </List.Item>
 
       {store.diagram.children.some((network) => network.isMultilayer) && (
-        <ListItem>
+        <List.Item>
           <Text
             color={headerColor}
             fontWeight={600}
@@ -191,7 +191,7 @@ export default observer(function Colors() {
           >
             By layer id
           </Text>
-          <ButtonGroup isAttached w="100%" mt={1}>
+          <ButtonGroup attached w="100%" mt={1}>
             <Button
               onClick={() => store.colorByLayer()}
               justifyContent="center"
@@ -199,11 +199,11 @@ export default observer(function Colors() {
               Paint all
             </Button>
           </ButtonGroup>
-        </ListItem>
+        </List.Item>
       )}
 
       {store.diagram.children.some((network) => network.isHigherOrder) && (
-        <ListItem>
+        <List.Item>
           <Text
             color={headerColor}
             fontWeight={600}
@@ -214,7 +214,7 @@ export default observer(function Colors() {
           >
             By physical id
           </Text>
-          <ButtonGroup isAttached w="100%" mt={1}>
+          <ButtonGroup attached w="100%" mt={1}>
             <Button
               onClick={() => store.colorByPhysicalId()}
               justifyContent="center"
@@ -222,7 +222,7 @@ export default observer(function Colors() {
               Paint all
             </Button>
           </ButtonGroup>
-        </ListItem>
+        </List.Item>
       )}
     </>
   );

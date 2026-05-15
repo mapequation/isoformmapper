@@ -2,29 +2,31 @@ import {
   Button as CkButton,
   ButtonProps,
   HStack,
-  ListItem,
+  List,
   ListItemProps,
-  Radio,
-  RadioGroup as CkRadioGroup,
-  Select as CkSelect,
+  NativeSelect,
+  RadioGroup,
   Slider as CkSlider,
-  SliderFilledTrack,
-  SliderProps,
-  SliderThumb,
-  SliderTrack,
+  SliderRootProps,
   Switch as CkSwitch,
-  SwitchProps,
-  Tooltip,
+  SwitchRootProps,
   VStack,
 } from "@chakra-ui/react";
+import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
+import { Tooltip } from "../ui/tooltip";
 
 export function Button(props: ButtonProps) {
   return (
     <CkButton
       width="full"
+      flex="1"
+      minW={0}
       variant="outline"
-      size="sm"
+      // size="xs" gives the v2 sm height (~32px); fontSize="sm" restores the
+      // v2 sm label size (~14px) since v3's "xs" textStyle defaults to 12px.
+      size="xs"
+      fontSize="sm"
       justifyContent="flex-start"
       fontWeight={500}
       {...props}
@@ -34,15 +36,15 @@ export function Button(props: ButtonProps) {
 
 export function ListItemButton(props: ButtonProps) {
   return (
-    <ListItem>
+    <List.Item>
       <Button {...props} />
-    </ListItem>
+    </List.Item>
   );
 }
 
 export function ListItemHeader(props: ListItemProps) {
   return (
-    <ListItem
+    <List.Item
       fontWeight={700}
       textTransform="uppercase"
       letterSpacing="tight"
@@ -61,59 +63,73 @@ export function Label({ children, ...props }: any) {
   );
 }
 
+type SliderHelperProps = Omit<SliderRootProps, "onChange" | "value"> & {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+  valueLabelFormat?: (value: number) => string | number;
+};
+
 export function Slider({
   label,
   value,
   onChange,
   valueLabelFormat,
   ...props
-}: {
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  valueLabelFormat?: (value: number) => string | number;
-} & SliderProps) {
+}: SliderHelperProps) {
   const [currentValue, setCurrentValue] = useState(value);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => setCurrentValue(value), [value, setCurrentValue]);
 
   return (
-    <ListItem>
+    <List.Item>
       <Label>{label}</Label>
-      <CkSlider
-        defaultValue={value}
-        value={currentValue}
+      <CkSlider.Root
+        defaultValue={[value]}
+        value={[currentValue]}
         w="50%"
         size="sm"
-        onChange={setCurrentValue}
-        onChangeEnd={onChange}
+        colorPalette="blue"
+        display="inline-block"
+        // Match the v2 look: small thumb (10px) and thin track (3px).
+        style={
+          {
+            "--slider-thumb-size": "10px",
+            "--slider-track-size": "3px",
+          } as CSSProperties
+        }
+        onValueChange={(details) => setCurrentValue(details.value[0])}
+        onValueChangeEnd={(details) => onChange(details.value[0])}
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
         {...props}
       >
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-        <Tooltip
-          hasArrow
-          placement="top"
-          bg="blue.600"
-          isOpen={isOpen}
-          label={
-            valueLabelFormat != null
-              ? valueLabelFormat(currentValue)
-              : currentValue
-          }
-        >
-          <SliderThumb />
-        </Tooltip>
-      </CkSlider>
-    </ListItem>
+        <CkSlider.Control>
+          <CkSlider.Track>
+            <CkSlider.Range />
+          </CkSlider.Track>
+          <Tooltip
+            showArrow
+            open={isOpen}
+            positioning={{ placement: "top" }}
+            content={
+              valueLabelFormat != null
+                ? valueLabelFormat(currentValue)
+                : currentValue
+            }
+          >
+            <CkSlider.Thumb index={0}>
+              <CkSlider.HiddenInput />
+            </CkSlider.Thumb>
+          </Tooltip>
+        </CkSlider.Control>
+      </CkSlider.Root>
+    </List.Item>
   );
 }
 
-export function RadioGroup<T extends string>({
+export function RadioGroupSelect<T extends string>({
   legend,
   value,
   onChange,
@@ -128,41 +144,54 @@ export function RadioGroup<T extends string>({
 }) {
   const Wrapper = hstack ? HStack : VStack;
 
-  const opts = options.map((value) => (
-    <Radio value={value} key={value}>
-      {value}
-    </Radio>
-  ));
-
   return (
-    <ListItem>
+    <List.Item>
       <HStack>
         <Label>{legend}</Label>
-        <CkRadioGroup value={value} onChange={onChange} size="sm">
-          <Wrapper align="left" children={opts} />
-        </CkRadioGroup>
+        <RadioGroup.Root
+          value={value}
+          onValueChange={(details) => onChange(details.value as T)}
+          size="sm"
+          colorPalette="blue"
+        >
+          <Wrapper align="left">
+            {options.map((opt) => (
+              <RadioGroup.Item value={opt} key={opt}>
+                <RadioGroup.ItemHiddenInput />
+                <RadioGroup.ItemIndicator />
+                <RadioGroup.ItemText>{opt}</RadioGroup.ItemText>
+              </RadioGroup.Item>
+            ))}
+          </Wrapper>
+        </RadioGroup.Root>
       </HStack>
-    </ListItem>
+    </List.Item>
   );
 }
 
-export function Switch({
-  label,
-  onChange,
-  ...props
-}: {
+export { RadioGroupSelect as RadioGroup };
+
+type SwitchHelperProps = Omit<SwitchRootProps, "onChange"> & {
   label: string;
   onChange: (value: boolean) => void;
-} & Omit<SwitchProps, "onChange">) {
+};
+
+export function Switch({ label, onChange, ...props }: SwitchHelperProps) {
   return (
-    <ListItem>
+    <List.Item>
       <Label>{label}</Label>
-      <CkSwitch
+      <CkSwitch.Root
         size="sm"
-        onChange={(event) => onChange(event.target.checked)}
+        colorPalette="blue"
+        onCheckedChange={(details) => onChange(details.checked)}
         {...props}
-      />
-    </ListItem>
+      >
+        <CkSwitch.HiddenInput />
+        <CkSwitch.Control>
+          <CkSwitch.Thumb />
+        </CkSwitch.Control>
+      </CkSwitch.Root>
+    </List.Item>
   );
 }
 
@@ -176,19 +205,23 @@ export function Select({
   options: string[];
 }) {
   return (
-    <CkSelect
+    <NativeSelect.Root
       size="sm"
       w="50%"
-      variant="flused"
+      variant="plain"
       display="inline-block"
-      value={value}
-      onChange={(event) => setValue(event.target.value)}
     >
-      {options.map((name) => (
-        <option key={name} value={name}>
-          {name}
-        </option>
-      ))}
-    </CkSelect>
+      <NativeSelect.Field
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+      >
+        {options.map((name) => (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        ))}
+      </NativeSelect.Field>
+      <NativeSelect.Indicator />
+    </NativeSelect.Root>
   );
 }

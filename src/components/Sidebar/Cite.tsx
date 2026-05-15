@@ -1,16 +1,6 @@
-import {
-  Code,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Portal,
-  Text
-} from "@chakra-ui/react";
+import { Code, Popover, Portal, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
+import { CloseButton } from "../ui/close-button";
 import MapEquationBibTeX from "./MapEquationBibTeX";
 
 const mappingChangeBibTeX = `@article{holmgren2023mapping,
@@ -28,43 +18,47 @@ const mappingChangeBibTeX = `@article{holmgren2023mapping,
 
 export default function Cite({ children }: PropsWithChildren<any>) {
   return (
-    <Popover placement="auto-start">
-      <PopoverTrigger>{children}</PopoverTrigger>
+    <Popover.Root positioning={{ placement: "top-start" }}>
+      <Popover.Trigger asChild>{children}</Popover.Trigger>
       <Portal>
-        <PopoverContent>
-          <PopoverHeader fontWeight="bold" border="0">
-            BibTeX
-          </PopoverHeader>
-          <PopoverArrow />
-          <PopoverCloseButton />
-          <PopoverBody>
-            <Text my="1em">Please cite</Text>
+        <Popover.Positioner>
+          <Popover.Content>
+            <Popover.Arrow />
+            <Popover.CloseTrigger asChild>
+              <CloseButton size="sm" position="absolute" top="2" insetEnd="2" />
+            </Popover.CloseTrigger>
+            <Popover.Header fontWeight="bold" border="0">
+              BibTeX
+            </Popover.Header>
+            <Popover.Body>
+              <Text my="1em">Please cite</Text>
 
-            <Code
-              fontSize="xs"
-              whiteSpace="pre-wrap"
-              display="block"
-              p={2}
-              lineHeight={1.5}
-            >
-              {mappingChangeBibTeX}
-            </Code>
+              <Code
+                fontSize="xs"
+                whiteSpace="pre-wrap"
+                display="block"
+                p={2}
+                lineHeight={1.5}
+              >
+                {mappingChangeBibTeX}
+              </Code>
 
-            <Text my="1em">and</Text>
+              <Text my="1em">and</Text>
 
-            <Code
-              fontSize="xs"
-              whiteSpace="pre-wrap"
-              display="block"
-              p={2}
-              lineHeight={1.5}
-            >
-              <MapEquationBibTeX />
-            </Code>
-          </PopoverBody>
-        </PopoverContent>
+              <Code
+                fontSize="xs"
+                whiteSpace="pre-wrap"
+                display="block"
+                p={2}
+                lineHeight={1.5}
+              >
+                <MapEquationBibTeX />
+              </Code>
+            </Popover.Body>
+          </Popover.Content>
+        </Popover.Positioner>
       </Portal>
-    </Popover>
+    </Popover.Root>
   );
 }
 

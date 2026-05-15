@@ -1,4 +1,4 @@
-import { IconButton, Text, Tooltip } from "@chakra-ui/react";
+import { IconButton, Text } from "@chakra-ui/react";
 import { Reorder, useMotionValue } from "framer-motion";
 import { PropsWithChildren } from "react";
 import { BiNetworkChart as GraphIcon } from "react-icons/bi";
@@ -6,6 +6,7 @@ import { GrTextAlignFull as TextIcon } from "react-icons/gr";
 import { IoLayersOutline as MultilayerIcon, IoMenu } from "react-icons/io5";
 import { MdClear } from "react-icons/md";
 import useRaisedShadow from "../../../hooks/useRaisedShadow";
+import { Tooltip } from "../../ui/tooltip";
 import type { NetworkFile } from "../types";
 
 export function LayerIcon() {
@@ -83,14 +84,15 @@ export function NetworkIcon({
       aria-label={file.isMultilayer ? "multilayer" : "network"}
       onClick={file.isMultilayer && !isSingleLayer ? onClick : undefined}
       pointerEvents={file.isMultilayer && !isSingleLayer ? "auto" : "none"}
-      icon={Icon}
       color={color}
       bg={bg}
-      isRound={true}
+      borderRadius="full"
       fontSize="1.3rem"
       size="md"
       boxShadow="md"
-    />
+    >
+      {Icon}
+    </IconButton>
   );
 }
 
@@ -105,7 +107,7 @@ export function RemoveButton({
 }) {
   return (
     <IconButton
-      isRound
+      borderRadius="full"
       size="xs"
       onClick={onClick}
       pos="absolute"
@@ -123,8 +125,9 @@ export function RemoveButton({
       bg={bg}
       variant="ghost"
       fontSize="1.5rem"
-      icon={<MdClear />}
-    />
+    >
+      <MdClear />
+    </IconButton>
   );
 }
 
@@ -133,7 +136,7 @@ export function InfomapToggleButton({ onClick }: { onClick: () => void }) {
     <IconButton
       aria-label="settings"
       onClick={onClick}
-      isRound
+      borderRadius="full"
       size="sm"
       variant="ghost"
       pos="absolute"
@@ -142,8 +145,9 @@ export function InfomapToggleButton({ onClick }: { onClick: () => void }) {
       _focus={{
         outline: "none",
       }}
-      icon={<IoMenu />}
-    />
+    >
+      <IoMenu />
+    </IconButton>
   );
 }
 
@@ -162,8 +166,8 @@ export function TruncatedFilename({
       {sameLength ? (
         name
       ) : (
-        <Tooltip label={name} aria-label={name}>
-          {truncatedName}
+        <Tooltip content={name} aria-label={name}>
+          <span>{truncatedName}</span>
         </Tooltip>
       )}
     </Text>

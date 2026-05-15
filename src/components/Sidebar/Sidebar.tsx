@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Kbd,
-  List,
-  ListItem,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Kbd, List, Text } from "@chakra-ui/react";
 import Infomap from "@mapequation/infomap";
 import { observer } from "mobx-react";
 import {
@@ -18,11 +10,11 @@ import {
 } from "react";
 import { MdFileUpload, MdHelp } from "react-icons/md";
 import { StoreContext } from "../../store";
-import { drawerWidth } from "../App";
 import Logo from "../Logo";
+import { useColorModeValue } from "../ui/color-mode";
 import Cite, { CiteIcon } from "./Cite";
 import Colors from "./Colors";
-import { ListItemButton } from "./components";
+import { Button, ListItemButton } from "./components";
 import Export from "./Export";
 import Layout from "./Layout";
 import Metadata from "./Metadata";
@@ -49,53 +41,52 @@ export default observer(function Sidebar({
 }) {
   const store = useContext(StoreContext);
   const { defaultHighlightColor } = store;
-  const bg = useColorModeValue("white", "gray.800");
+  const bg = useColorModeValue("white", "gray.900");
   const headerColor = useColorModeValue("blue.600", "blue.200");
   const [color, setColor] = useState(defaultHighlightColor);
 
   return (
     <Box
-      position="fixed"
-      bottom="0"
-      right="0"
-      width={drawerWidth}
+      width="100%"
       height="100%"
       bg={bg}
       zIndex="1"
-      overflowY="scroll"
+      overflowY="auto"
       boxShadow="2xl"
       p="5"
       pb={10}
     >
-      <List spacing={2} fontSize="0.9rem">
-        <ListItem mb={5}>
+      <List.Root
+        gap={2}
+        fontSize="0.9rem"
+        listStyleType="none"
+        ml={0}
+        pl={0}
+      >
+        <List.Item mb={5}>
           <Logo showVersion />
           <Text ml="3.6em" mt={-1} fontSize="xs">
             Powered by Infomap v{Infomap.__version__}
           </Text>
-        </ListItem>
+        </List.Item>
 
-        <ListItemButton onClick={onLoadClick} leftIcon={<MdFileUpload />}>
+        <ListItemButton onClick={onLoadClick}>
+          <MdFileUpload />
           Load or arrange
           <Kbd ml="auto">L</Kbd>
         </ListItemButton>
 
-        <ListItem>
+        <List.Item>
           <Cite>
-            <Button
-              width="full"
-              variant="outline"
-              size="sm"
-              justifyContent="flex-start"
-              fontWeight={500}
-              leftIcon={<CiteIcon />}
-            >
+            <Button>
+              <CiteIcon />
               How to cite
             </Button>
           </Cite>
-        </ListItem>
+        </List.Item>
 
-        <ListItemButton onClick={onAboutClick} leftIcon={<MdHelp />}>
+        <ListItemButton onClick={onAboutClick}>
+          <MdHelp />
           Help
         </ListItemButton>
 
@@ -106,7 +97,7 @@ export default observer(function Sidebar({
           <Layout />
           <Export />
         </SidebarContext.Provider>
-      </List>
+      </List.Root>
     </Box>
   );
 });

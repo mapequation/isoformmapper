@@ -1,5 +1,5 @@
-import { LightMode, Tooltip as CkTooltip } from "@chakra-ui/react";
-import React, { PropsWithChildren } from "react";
+import { Tooltip as ChakraTooltip, Portal } from "@chakra-ui/react";
+import { PropsWithChildren } from "react";
 import ModuleTooltip from "./ModuleTooltip";
 
 export default function Tooltip({
@@ -7,17 +7,18 @@ export default function Tooltip({
   ...props
 }: PropsWithChildren<any>) {
   return (
-    <LightMode>
-      <CkTooltip
-        hasArrow
-        placement="top"
-        shadow="xl"
-        borderRadius="sm"
-        openDelay={500}
-        label={<ModuleTooltip {...props} />}
-      >
-        {children}
-      </CkTooltip>
-    </LightMode>
+    <ChakraTooltip.Root openDelay={500} positioning={{ placement: "top" }}>
+      <ChakraTooltip.Trigger asChild>{children}</ChakraTooltip.Trigger>
+      <Portal>
+        <ChakraTooltip.Positioner>
+          <ChakraTooltip.Content shadow="xl" borderRadius="sm">
+            <ChakraTooltip.Arrow>
+              <ChakraTooltip.ArrowTip />
+            </ChakraTooltip.Arrow>
+            <ModuleTooltip {...props} />
+          </ChakraTooltip.Content>
+        </ChakraTooltip.Positioner>
+      </Portal>
+    </ChakraTooltip.Root>
   );
 }

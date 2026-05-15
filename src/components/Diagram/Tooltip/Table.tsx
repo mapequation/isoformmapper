@@ -1,4 +1,4 @@
-import { Table as CkTable, Tbody, Td, Tr } from "@chakra-ui/react";
+import { Table as CkTable } from "@chakra-ui/react";
 import type { Module } from "../../../alluvial";
 
 export function Table({
@@ -12,38 +12,38 @@ export function Table({
   const fractionNodes = (100 * numNodes) / totalNumNodes;
 
   return (
-    <CkTable variant="unstyled" size="sm" mt={1}>
-      <Tbody>
-        <Tr>
-          <Td>Module</Td>
-          <Td>{module.moduleId}</Td>
-        </Tr>
-        <Tr>
-          <Td>Level</Td>
-          <Td>
+    <CkTable.Root variant="outline" size="sm" mt={1}>
+      <CkTable.Body>
+        <CkTable.Row>
+          <CkTable.Cell>Module</CkTable.Cell>
+          <CkTable.Cell>{module.moduleId}</CkTable.Cell>
+        </CkTable.Row>
+        <CkTable.Row>
+          <CkTable.Cell>Level</CkTable.Cell>
+          <CkTable.Cell>
             {module.moduleLevel}
             {module.isTopModule
               ? " (top)"
               : module.isLeafModule
               ? " (leaf)"
               : ""}
-          </Td>
-        </Tr>
-        <Tr>
-          <Td>Flow</Td>
-          <Td>{module.flow.toPrecision(3)}</Td>
-        </Tr>
-        <Tr>
-          <Td>Leaf nodes</Td>
-          <Td>
+          </CkTable.Cell>
+        </CkTable.Row>
+        <CkTable.Row>
+          <CkTable.Cell>Flow</CkTable.Cell>
+          <CkTable.Cell>{module.flow.toPrecision(3)}</CkTable.Cell>
+        </CkTable.Row>
+        <CkTable.Row>
+          <CkTable.Cell>Leaf nodes</CkTable.Cell>
+          <CkTable.Cell>
             {numNodes} ({fractionNodes.toFixed(1)}%)
-          </Td>
-        </Tr>
-        <Tr>
-          <Td>Sub-modules</Td>
-          <Td>{module.hasSubmodules ? "Yes" : "No"}</Td>
-        </Tr>
-      </Tbody>
-    </CkTable>
+          </CkTable.Cell>
+        </CkTable.Row>
+        <CkTable.Row>
+          <CkTable.Cell>Sub-modules</CkTable.Cell>
+          <CkTable.Cell>{module.hasSubmodules ? "Yes" : "No"}</CkTable.Cell>
+        </CkTable.Row>
+      </CkTable.Body>
+    </CkTable.Root>
   );
 }

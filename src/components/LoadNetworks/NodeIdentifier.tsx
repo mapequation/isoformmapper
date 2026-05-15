@@ -1,15 +1,10 @@
-import { QuestionOutlineIcon } from "@chakra-ui/icons";
-import {
-  FormLabel,
-  HStack,
-  Radio,
-  RadioGroup,
-  Tooltip,
-} from "@chakra-ui/react";
+import { HStack, RadioGroup, Text } from "@chakra-ui/react";
 import { observer } from "mobx-react";
 import { useContext } from "react";
+import { LuCircleHelp } from "react-icons/lu";
 import type { Identifier } from "../../alluvial";
 import { StoreContext } from "../../store";
+import { Tooltip } from "../ui/tooltip";
 import { LoadContext } from "./context";
 import { setIdentifiers } from "./utils";
 
@@ -24,9 +19,6 @@ export default observer(function NodeIdentifier({
   const updateIdentifiers = (identifier: Identifier) => {
     state.files.forEach((file) => {
       if (file.isExpanded) {
-        // No need to do anything: using node ids as identifier in an expanded
-        // multilayer file is always correct.
-        //setIdentifiers(file, "multilayer-expanded");
         return;
       }
 
@@ -57,23 +49,42 @@ export default observer(function NodeIdentifier({
 
   return (
     <>
-      <FormLabel fontSize="sm" htmlFor="identifier" mr={0} mb={0}>
+      <Text
+        as="label"
+        // @ts-expect-error - label htmlFor
+        htmlFor="identifier"
+        fontSize="sm"
+        mr={0}
+        mb={0}
+      >
         Node Identifier{" "}
-        <Tooltip hasArrow placement="top" label={tooltip}>
-          <QuestionOutlineIcon />
+        <Tooltip showArrow positioning={{ placement: "top" }} content={tooltip}>
+          <span style={{ display: "inline-flex", verticalAlign: "middle" }}>
+            <LuCircleHelp />
+          </span>
         </Tooltip>
-      </FormLabel>
-      <RadioGroup
-        isDisabled={isDisabled}
-        onChange={updateIdentifiers}
+      </Text>
+      <RadioGroup.Root
+        disabled={isDisabled}
+        onValueChange={(details) =>
+          updateIdentifiers(details.value as Identifier)
+        }
         value={identifier}
         size="sm"
       >
-        <HStack spacing={2}>
-          <Radio value="id">Id</Radio>
-          <Radio value="name">Name</Radio>
+        <HStack gap={2}>
+          <RadioGroup.Item value="id">
+            <RadioGroup.ItemHiddenInput />
+            <RadioGroup.ItemIndicator />
+            <RadioGroup.ItemText>Id</RadioGroup.ItemText>
+          </RadioGroup.Item>
+          <RadioGroup.Item value="name">
+            <RadioGroup.ItemHiddenInput />
+            <RadioGroup.ItemIndicator />
+            <RadioGroup.ItemText>Name</RadioGroup.ItemText>
+          </RadioGroup.Item>
         </HStack>
-      </RadioGroup>
+      </RadioGroup.Root>
     </>
   );
 });

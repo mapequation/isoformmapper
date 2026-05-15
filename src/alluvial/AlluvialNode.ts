@@ -84,7 +84,20 @@ export default abstract class AlluvialNode<
 > extends Layout {
   abstract readonly depth: Depth;
 
-  flow: number = 0;
+  // Backing field is `_flow` so subclasses can override the `flow` accessor
+  // without being shadowed by a class field declaration. (With
+  // `useDefineForClassFields: true`, a parent class field is set on the
+  // instance via Object.defineProperty during super() — that shadows any
+  // prototype getter/setter declared on a subclass.)
+  protected _flow: number = 0;
+
+  get flow(): number {
+    return this._flow;
+  }
+
+  set flow(value: number) {
+    this._flow = value;
+  }
 
   children: ChildType[] = [];
 

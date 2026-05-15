@@ -1,13 +1,4 @@
-import {
-  ButtonGroup,
-  Flex,
-  FormLabel,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-} from "@chakra-ui/react";
+import { ButtonGroup, Flex, NumberInput, Text } from "@chakra-ui/react";
 import * as d3 from "d3";
 import { observer } from "mobx-react";
 import { useCallback, useContext, useMemo, useState } from "react";
@@ -163,7 +154,7 @@ export default observer(function Real({
         setShowMean={() => setShowQuartiles(false)}
       />
 
-      <ButtonGroup isAttached w="100%" mt={1}>
+      <ButtonGroup attached w="100%" mt={1}>
         <Button
           onClick={paintIntervals(data.boxBounds, true)}
           justifyContent="center"
@@ -177,7 +168,7 @@ export default observer(function Real({
           Paint mean
         </Button>
       </ButtonGroup>
-      <ButtonGroup isAttached w="100%" mt={1}>
+      <ButtonGroup attached w="100%" mt={1}>
         <Button
           onClick={() => store.colorRealMetadata(name, hist)}
           justifyContent="center"
@@ -227,7 +218,7 @@ function Chart({
       <YAxis type="number" domain={["auto", "dataMax"]} />
       <Tooltip />
       <Bar dataKey="count" fill="#8884d8" xAxisId="hidden">
-        {hist.map(({ x0, x1, color }, i) => (
+        {hist.map(({ color }, i) => (
           <Cell cursor="pointer" fill={color} key={`cell-${i}`} />
         ))}
       </Bar>
@@ -275,12 +266,12 @@ function StatisticSelector({
   setShowMean: () => void;
 }) {
   return (
-    <ButtonGroup isAttached w="100%">
+    <ButtonGroup attached w="100%">
       <Button
         justifyContent="center"
         size="xs"
-        isActive={showQuartiles}
-        isDisabled={showQuartiles}
+        data-active={showQuartiles ? "" : undefined}
+        disabled={showQuartiles}
         onClick={setShowQuartiles}
       >
         Show quartiles
@@ -288,8 +279,8 @@ function StatisticSelector({
       <Button
         justifyContent="center"
         size="xs"
-        isActive={!showQuartiles}
-        isDisabled={!showQuartiles}
+        data-active={!showQuartiles ? "" : undefined}
+        disabled={!showQuartiles}
         onClick={setShowMean}
       >
         Show mean
@@ -310,27 +301,33 @@ const BinInput = observer(function BinInput({
   const store = useContext(StoreContext);
 
   return (
-    <Flex mt={1} justify="space-between">
-      <FormLabel fontSize="sm">Approx. number of bins</FormLabel>
-      <NumberInput
+    <Flex mt={1} justify="space-between" align="center">
+      <Text as="label" fontSize="sm">
+        Approx. number of bins
+      </Text>
+      <NumberInput.Root
         size="xs"
         min={4}
         step={1}
         maxW="30%"
-        isRequired={false}
-        value={numBins ?? length}
-        onChange={(value) =>
-          setNumBins(value === "" || +value <= 4 ? null : +value)
+        value={String(numBins ?? length)}
+        onValueChange={(details) =>
+          setNumBins(
+            details.value === "" || details.valueAsNumber <= 4
+              ? null
+              : details.valueAsNumber
+          )
         }
-        onFocus={() => store.setEditMode(true)}
-        onBlur={() => store.setEditMode(false)}
       >
-        <NumberInputField />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
+        <NumberInput.Input
+          onFocus={() => store.setEditMode(true)}
+          onBlur={() => store.setEditMode(false)}
+        />
+        <NumberInput.Control>
+          <NumberInput.IncrementTrigger />
+          <NumberInput.DecrementTrigger />
+        </NumberInput.Control>
+      </NumberInput.Root>
     </Flex>
   );
 });

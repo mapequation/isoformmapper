@@ -1,14 +1,10 @@
 import {
   Button,
   Checkbox,
-  FormControl,
-  FormLabel,
+  Fieldset,
   HStack,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
   NumberInput,
-  NumberInputField,
-  NumberInputStepper,
+  Text,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useId } from "react";
@@ -40,47 +36,60 @@ export default function Infomap({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <FormControl isDisabled={disabled}>
+      <Fieldset.Root disabled={disabled}>
         <HStack justify="space-between">
-          <FormLabel fontSize="sm" fontWeight={400} htmlFor={id} pt={1}>
+          <Text
+            as="label"
+            // @ts-expect-error - label htmlFor
+            htmlFor={id}
+            fontSize="sm"
+            fontWeight={400}
+            pt={1}
+          >
             Trials
-          </FormLabel>
-          <NumberInput
+          </Text>
+          <NumberInput.Root
             id={id}
             size="xs"
-            value={numTrials}
-            onChange={(value) => setNumTrials(Math.max(1, +value))}
+            value={String(numTrials)}
+            onValueChange={(details) =>
+              setNumTrials(Math.max(1, details.valueAsNumber))
+            }
             min={1}
             max={100}
             step={1}
           >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
+            <NumberInput.Input />
+            <NumberInput.Control>
+              <NumberInput.IncrementTrigger />
+              <NumberInput.DecrementTrigger />
+            </NumberInput.Control>
+          </NumberInput.Root>
         </HStack>
-        <Checkbox
-          isDisabled={disabled}
+        <Checkbox.Root
+          disabled={disabled}
           size="sm"
-          isChecked={directed}
-          onChange={(e) => setDirected(e.target.checked)}
+          checked={directed}
+          onCheckedChange={(details) => setDirected(details.checked === true)}
         >
-          Directed
-        </Checkbox>
-        <Checkbox
-          isDisabled={disabled}
+          <Checkbox.HiddenInput />
+          <Checkbox.Control />
+          <Checkbox.Label>Directed</Checkbox.Label>
+        </Checkbox.Root>
+        <Checkbox.Root
+          disabled={disabled}
           size="sm"
-          isChecked={twoLevel}
-          onChange={(e) => setTwoLevel(e.target.checked)}
+          checked={twoLevel}
+          onCheckedChange={(details) => setTwoLevel(details.checked === true)}
         >
-          Two-level
-        </Checkbox>
+          <Checkbox.HiddenInput />
+          <Checkbox.Control />
+          <Checkbox.Label>Two-level</Checkbox.Label>
+        </Checkbox.Root>
         <Button
           mt={1}
-          isDisabled={disabled}
-          isLoading={disabled}
+          disabled={disabled}
+          loading={disabled}
           size="xs"
           width="full"
           type="submit"
@@ -88,7 +97,7 @@ export default function Infomap({
         >
           Run Infomap
         </Button>
-      </FormControl>
+      </Fieldset.Root>
     </motion.div>
   );
 }

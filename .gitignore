@@ -8,6 +8,12 @@
 # testing
 /coverage
 
+# Playwright test artifacts and traces
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
 # production
 /build
 
@@ -24,3 +30,6 @@ yarn-error.log*
 
 .idea
 public/data
+
+.tsbuildinfo-node
+*.tsbuildinfo

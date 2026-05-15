@@ -13,7 +13,6 @@ export type Identifier = "id" | "name"; // FIXME
 export default class LeafNode extends AlluvialNodeBase<never> {
   readonly depth = LEAF_NODE;
   readonly name: string;
-  private flow_: number;
   readonly nodeId: number;
   readonly stateId?: number | null = null;
   readonly layerId?: number | null = null;
@@ -43,7 +42,7 @@ export default class LeafNode extends AlluvialNodeBase<never> {
   constructor(node: any, network: Network) {
     super(null, network.networkId, node.path);
     this.name = node.name;
-    this.flow_ = node.flow;
+    this._flow = node.flow;
     this.nodeId = node.id;
     this.stateId = node.stateId != null ? node.stateId : null;
     this.layerId = node.layerId != null ? node.layerId : null;
@@ -65,13 +64,12 @@ export default class LeafNode extends AlluvialNodeBase<never> {
     return !this.treePath.isSignificant(this.moduleLevel - 1);
   }
 
-  // @ts-ignore
-  get flow() {
-    return this.visible ? this.flow_ : 0;
+  override get flow(): number {
+    return this.visible ? this._flow : 0;
   }
 
-  set flow(flow: number) {
-    this.flow_ = flow;
+  override set flow(value: number) {
+    this._flow = value;
   }
 
   get level(): number {
