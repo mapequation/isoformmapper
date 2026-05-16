@@ -1,23 +1,20 @@
-import { Box, Container, Flex, HStack, Heading, Text } from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, Text } from "@chakra-ui/react";
 import { observer } from "mobx-react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { StoreContext } from "../../store";
 import StepHeading from "./StepHeading";
 import AlignSequences from "./AlignSequences";
 import LoadData from "./LoadData";
 import PartitionNetworks from "./PartitionNetworks";
-import InputTextArea from "./InputTextArea";
 import useEventListener from "../../hooks/useEventListener";
 import IsoformAlluvialDiagram from "./IsoformAlluvialDiagram";
 import SequenceView from "./SequenceView";
 import { CheckCircleIcon } from "@chakra-ui/icons";
-import FileInput from "./FileInput";
 import DropData from "./DropData";
 import { Button } from "../Sidebar/components";
 
 export default observer(function IsoformApp() {
   const store = useContext(StoreContext);
-  const [activeStep, setActiveStep] = useState(1);
   useEventListener("keydown", (event) => {
     // @ts-ignore
     const key = event?.key;
@@ -35,7 +32,7 @@ export default observer(function IsoformApp() {
       alignItems="center"
     >
       <Flex id="step1" direction="column" alignItems="center" mb={20}>
-        <StepHeading step={1} title="Load data" active={activeStep == 1} />
+        <StepHeading step={1} title="Load data" />
 
         <Text>
           Load your own data below to submit your own analysis or load example
