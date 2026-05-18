@@ -20,13 +20,15 @@ import type { NetworkFile } from "../components/LoadNetworks";
 import type { Histogram } from "../components/Sidebar/Metadata/Real";
 import TreePath from "../utils/TreePath";
 import BipartiteGraph from "./BipartiteGraph";
+import InputStore from "./InputStore";
 import { COLOR_SCHEMES, ColorScheme, SchemeName } from "./schemes";
 
 export class Store {
+  input: InputStore;
   diagram = new Diagram();
 
   files: NetworkFile[] = [];
-  identifier: Identifier = "id";
+  identifier: Identifier = "name";
 
   // hack to force updates when we call updateLayout
   updateFlag = true;
@@ -43,8 +45,8 @@ export class Store {
   streamlineOpacity: number = 0.8;
   flowThreshold: number = 5e-3;
 
-  selectedScheme: ColorScheme = COLOR_SCHEMES["C3 Sinebow"];
-  selectedSchemeName: SchemeName = "C3 Sinebow";
+  selectedScheme: ColorScheme = COLOR_SCHEMES["C3 Turbo"];
+  selectedSchemeName: SchemeName = "C3 Turbo";
 
   defaultHighlightColor: string = "#b6b69f";
   highlightColors: string[] = [...this.selectedScheme];
@@ -53,7 +55,7 @@ export class Store {
   moduleSize: ModuleSize = "flow";
   sortModulesBy: ModuleOrder = "flow";
 
-  showModuleId: boolean = false;
+  showModuleId: boolean = true;
   showModuleNames: boolean = true;
   multilineModuleNames: boolean = true;
   showNetworkNames: boolean = true;
@@ -115,6 +117,7 @@ export class Store {
       editMode: observable,
       showBipartiteNodes: observable,
     });
+    this.input = new InputStore(this);
   }
 
   private checkColors(networks: any[]) {
@@ -163,6 +166,12 @@ export class Store {
     if (selectLargest) {
       this.setSelectedModule(this.diagram.children[0]?.children[0]);
     }
+
+    this.colorNodesInModulesInAllNetworks(undefined);
+
+    setTimeout(() => {
+      this.setSelectedModule(null);
+    }, 100);
 
     console.timeEnd("Store.setNetworks");
   });
@@ -838,6 +847,9 @@ export class Store {
   }
 
   updateLayout() {
+    if (this.numNetworks === 0) {
+      return;
+    }
     this.diagram.calcFlow();
     this.diagram.updateLayout(this);
     this.toggleUpdate();

@@ -14,9 +14,17 @@ import SelectedModule from "./SelectedModule";
 
 const zoom = d3.zoom<SVGSVGElement, unknown>().scaleExtent([0.1, 1000]);
 
-export default observer(function Diagram() {
+export default observer(function Diagram({
+  width: widthProp,
+  height: heightProp,
+}: {
+  width?: number;
+  height?: number;
+} = {}) {
   const ref = useRef<SVGSVGElement>(null);
-  const { width, height } = useWindowSize();
+  const window = useWindowSize();
+  const width = widthProp ?? window.width;
+  const height = heightProp ?? window.height;
   const store = useContext(StoreContext);
   const { diagram, defaultHighlightColor, highlightColors, updateFlag } = store;
   const fillColor = highlightColor(defaultHighlightColor, highlightColors);
@@ -87,7 +95,7 @@ export default observer(function Diagram() {
         <motion.g
           id="translate-center"
           initial={false}
-          animate={translateCenter(diagram)}
+          animate={translateCenter(diagram, { width, height }, !!widthProp)}
           transition={{ duration: 0.2, bounce: 0 }}
         >
           {diagram.children.map((network) => (
@@ -100,12 +108,26 @@ export default observer(function Diagram() {
   );
 });
 
-function translateCenter({ width, height }: { width: number; height: number }) {
+type BoxSize = { width: number; height: number };
+
+function translateCenter(
+  diagram: BoxSize,
+  box: BoxSize,
+  fitToBox: boolean,
+) {
+  if (fitToBox) {
+    const spaceX = box.width - diagram.width;
+    const spaceY = box.height - diagram.height;
+    const x = Math.max(spaceX / 2, 10);
+    const y = Math.max(spaceY / 2, 10);
+    return { x, y };
+  }
+
   let { innerWidth, innerHeight } = window;
   innerWidth -= drawerWidth;
 
-  const x = Math.max((innerWidth - width) / 2, 100);
-  const y = Math.max((innerHeight - height) / 3, 100);
+  const x = Math.max((innerWidth - diagram.width) / 2, 100);
+  const y = Math.max((innerHeight - diagram.height) / 3, 100);
 
   return { x, y };
 }
