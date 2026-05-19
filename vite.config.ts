@@ -6,7 +6,7 @@ const config: UserConfig & {
   test?: { environment: string; globals: boolean; setupFiles: string[], include: string[]; exclude: string[] };
 } = {
   plugins: [react()],
-  base: "/alluvial/",
+  base: "/isoformmapper/",
   build: {
     outDir: "build",
     sourcemap: true,

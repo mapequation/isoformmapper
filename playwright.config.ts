@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 1,
   reporter: "list",
   use: {
-    baseURL: "http://localhost:5173/alluvial/",
+    baseURL: "http://localhost:5174/isoformmapper/",
     trace: "off",
   },
   projects: [
@@ -16,8 +16,8 @@ export default defineConfig({
   ],
   webServer: {
     command: "npm run dev",
-    url: "http://localhost:5173/alluvial/",
-    reuseExistingServer: !process.env.CI,
+    url: "http://localhost:5174/isoformmapper/",
+    reuseExistingServer: true,
     stdout: "ignore",
     stderr: "pipe",
   },
