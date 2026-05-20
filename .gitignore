@@ -30,7 +30,7 @@ yarn-error.log*
 
 .idea
 .claude/
-public/data
+public/data/Alphafold_PDBs
 
 .tsbuildinfo-node
 *.tsbuildinfo
