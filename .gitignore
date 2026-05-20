@@ -34,3 +34,7 @@ public/data/Alphafold_PDBs
 
 .tsbuildinfo-node
 *.tsbuildinfo
+
+# Quarto preview artifacts
+*.html
+*_files/
