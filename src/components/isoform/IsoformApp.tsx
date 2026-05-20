@@ -32,7 +32,14 @@ export default observer(function IsoformApp() {
       alignItems="center"
     >
       <Flex id="step1" direction="column" alignItems="center" mb={20}>
-        <StepHeading step={1} title="Load data" />
+        <StepHeading
+          step={1}
+          title="Load data"
+          loading={
+            store.input.isoformStore1.isLoading ||
+            store.input.isoformStore2.isLoading
+          }
+        />
 
         <Text color="gray.600" mt={2} maxW="640px" textAlign="center">
           Drop your own <code>.pdb</code> files below, or pick an example to get
@@ -86,7 +93,11 @@ export default observer(function IsoformApp() {
       </Flex>
 
       <Flex id="step2" direction="column" alignItems="center" mb={20}>
-        <StepHeading step={2} title="Align sequences" />
+        <StepHeading
+          step={2}
+          title="Align sequences"
+          loading={store.input.isAligning}
+        />
 
         <AlignSequences />
 
@@ -94,7 +105,22 @@ export default observer(function IsoformApp() {
       </Flex>
 
       <Flex id="step3" direction="column" alignItems="center" mb={20}>
-        <StepHeading step={3} title="Generate and partition networks" />
+        <StepHeading
+          step={3}
+          title="Generate and partition networks"
+          loading={
+            store.input.isoformStore1.pdb.infomap.isRunning ||
+            store.input.isoformStore2.pdb.infomap.isRunning
+          }
+          progress={
+            store.input.isoformStore1.pdb.infomap.isRunning ||
+            store.input.isoformStore2.pdb.infomap.isRunning
+              ? (store.input.isoformStore1.pdb.infomap.progress +
+                  store.input.isoformStore2.pdb.infomap.progress) /
+                2
+              : null
+          }
+        />
 
         <PartitionNetworks />
 

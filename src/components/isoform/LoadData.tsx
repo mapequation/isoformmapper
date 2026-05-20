@@ -16,6 +16,8 @@ export default observer(function LoadData() {
     "Description",
   ];
 
+  const loading = store.input.isAnyStepLoading;
+
   return (
     <Box>
       <InputGroup
@@ -38,9 +40,16 @@ export default observer(function LoadData() {
           spellCheck={false}
           value={store.input.filterText}
           onChange={(event) => store.input.setFilterText(event.target.value)}
+          disabled={loading}
         />
       </InputGroup>
-      <Box maxH={210} overflowY="auto">
+      <Box
+        maxH={210}
+        overflowY="auto"
+        opacity={loading ? 0.5 : 1}
+        pointerEvents={loading ? "none" : "auto"}
+        transition="opacity 0.15s ease"
+      >
         <Table.Root variant="line" size="sm">
           <Table.Header>
             <Table.Row>

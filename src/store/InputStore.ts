@@ -64,6 +64,7 @@ export default class InputStore {
     linkDistanceThreshold = 7;
 
     isLoadingFiles = false;
+    isAligning = false;
     errors: ErrorItem[] = [];
 
     exampleData: ExampleItem[] = [];
@@ -87,9 +88,11 @@ export default class InputStore {
             inputFiles: observable.ref,
             linkDistanceThreshold: observable,
             isLoadingFiles: observable,
+            isAligning: observable,
             filterText: observable,
             filteredExampleData: computed,
             canGenerateAlluvial: computed,
+            isAnyStepLoading: computed,
             networks: computed,
             alignment: computed,
             canGenerateAlignment: computed,
@@ -131,6 +134,14 @@ export default class InputStore {
 
     get canGenerateAlluvial() {
         return this.isoformStore1.haveModules && this.isoformStore2.haveModules;
+    }
+
+    get isAnyStepLoading() {
+        return this.isoformStore1.isLoading
+            || this.isoformStore2.isLoading
+            || this.isAligning
+            || this.isoformStore1.pdb.infomap.isRunning
+            || this.isoformStore2.pdb.infomap.isRunning;
     }
 
     getFiles(extension: AcceptedFormats) {
@@ -214,9 +225,7 @@ export default class InputStore {
     })
 
     loadExample = action(async (item: ExampleItem) => {
-
         console.log("Load example:", item);
-
         await Promise.all([
             this.isoformStore1.loadExample(item.isoform1),
             this.isoformStore2.loadExample(item.isoform2),
@@ -257,14 +266,18 @@ export default class InputStore {
 
     generateAlignment = action(async () => {
         console.log("Calculate alignment...")
-        //TODO: Check and handle missing sequence
-        const sequences = this.isoforms.map(iso => iso.sequence!.code)
-        const alignment = await BioMSA.align(sequences);
-        for (let i = 0; i < this.isoforms.length; ++i) {
-            this.isoforms[i].setAlignedSequence(alignment[i])
+        this.isAligning = true;
+        try {
+            //TODO: Check and handle missing sequence
+            const sequences = this.isoforms.map(iso => iso.sequence!.code)
+            const alignment = await BioMSA.align(sequences);
+            for (let i = 0; i < this.isoforms.length; ++i) {
+                this.isoforms[i].setAlignedSequence(alignment[i])
+            }
+            this.generateAlignedNetworks();
+        } finally {
+            this.isAligning = false;
         }
-
-        this.generateAlignedNetworks();
     })
 
     generateAlignedNetworks = action(() => {

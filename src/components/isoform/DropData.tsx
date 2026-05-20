@@ -50,7 +50,7 @@ export default observer(function LoadData({
           description: rejectedFile.errors
             .map(({ message }) => message)
             .join("\n"),
-        })
+        }),
       ),
     onDrop,
   });
@@ -77,13 +77,9 @@ export default observer(function LoadData({
             color="gray.600"
             fontSize="medium"
           >
-            {isDragActive ? (
-              <Text>Drop the files here ...</Text>
-            ) : (
-              <Text>
-                Drag and drop <code>.pdb</code> files here, or click to select.
-              </Text>
-            )}
+            <Text>
+              Drag and drop <code>.pdb</code> files here, or click to select.
+            </Text>
           </Box>
         </div>
       </Skeleton>
