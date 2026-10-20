@@ -7,6 +7,20 @@ describe("sequence-parser", () => {
     expect(isFasta(["MEFA", "KLLV"])).toBe(false);
   });
 
+  it("skips leading blank and comment lines when detecting FASTA", () => {
+    expect(isFasta(["", "# exported", "  ", ">AT1G01790_P1", "MEFA"])).toBe(
+      true
+    );
+    expect(isFasta(["", "# exported", "MEFA", ">AT1G01790_P1"])).toBe(false);
+    expect(isFasta(["", "  "])).toBe(false);
+  });
+
+  it("parses FASTA with leading blank, whitespace-only and comment lines", () => {
+    expect(parseFasta(["", "# exported", "  ", ">AT1G01790_P1", "MEFA"])).toEqual(
+      [{ taxon: "AT1G01790_P1", code: "MEFA" }]
+    );
+  });
+
   it("parses multiple records with wrapped sequence lines", () => {
     const lines = [
       ">AT1G01790_P1",

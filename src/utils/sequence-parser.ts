@@ -2,14 +2,13 @@
 export type Sequence = { taxon: string, code: string }
 
 export const isFasta = (lines: string[]) => {
+    // The first line that isn't blank or a comment decides.
     for (let i = 0; i < lines.length; ++i) {
-        const line = lines[0].trim();
+        const line = lines[i].trim();
         if (line.length === 0 || line[0] === '#') {
             continue;
         }
-        if (line[0] === '>') {
-            return true;
-        }
+        return line[0] === '>';
     }
     return false;
 }
@@ -52,7 +51,7 @@ export const parseFasta = (lines: string[]) => {
 
     for (; lineIndex < lines.length; ++lineIndex) {
         const line = lines[lineIndex];
-        if (line.length === 0 || line[0] === '#') {
+        if (line.trim().length === 0 || line[0] === '#') {
             continue;
         }
         if (line[0] === '>') {
