@@ -1,0 +1,65 @@
+cff-version: 1.2.0
+message: "If you use IsoformMapper, please cite the article below."
+title: IsoformMapper
+abstract: >-
+  A web application for protein-level comparison of splice variants through
+  structural community analysis.
+type: software
+authors:
+  - given-names: Alexander
+    family-names: Vergara
+    orcid: "https://orcid.org/0000-0001-6535-9282"
+  - given-names: Tamara
+    family-names: Hernández-Verdeja
+    orcid: "https://orcid.org/0000-0002-2148-3676"
+  - given-names: Pedro
+    family-names: Ojeda-May
+    orcid: "https://orcid.org/0000-0001-9179-9441"
+  - given-names: Leonor
+    family-names: Ramirez
+  - given-names: Daniel
+    family-names: Edler
+    orcid: "https://orcid.org/0000-0001-5420-0591"
+  - given-names: Martin
+    family-names: Rosvall
+    orcid: "https://orcid.org/0000-0002-7181-9940"
+  - given-names: Åsa
+    family-names: Strand
+    orcid: "https://orcid.org/0000-0001-6664-0471"
+url: "https://www.mapequation.org/isoformmapper"
+repository-code: "https://github.com/mapequation/isoformmapper"
+license: MIT
+version: 1.0.0
+preferred-citation:
+  type: article
+  title: >-
+    IsoformMapper: a web application for protein-level comparison of splice
+    variants through structural community analysis
+  authors:
+    - given-names: Alexander
+      family-names: Vergara
+      orcid: "https://orcid.org/0000-0001-6535-9282"
+    - given-names: Tamara
+      family-names: Hernández-Verdeja
+      orcid: "https://orcid.org/0000-0002-2148-3676"
+    - given-names: Pedro
+      family-names: Ojeda-May
+      orcid: "https://orcid.org/0000-0001-9179-9441"
+    - given-names: Leonor
+      family-names: Ramirez
+    - given-names: Daniel
+      family-names: Edler
+      orcid: "https://orcid.org/0000-0001-5420-0591"
+    - given-names: Martin
+      family-names: Rosvall
+      orcid: "https://orcid.org/0000-0002-7181-9940"
+    - given-names: Åsa
+      family-names: Strand
+      orcid: "https://orcid.org/0000-0001-6664-0471"
+  journal: RNA
+  volume: 32
+  issue: 1
+  start: 1
+  end: 20
+  year: 2026
+  doi: 10.1261/rna.080738.125
