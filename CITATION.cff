@@ -29,7 +29,8 @@ authors:
 url: "https://www.mapequation.org/isoformmapper"
 repository-code: "https://github.com/mapequation/isoformmapper"
 license: MIT
-version: 1.0.0
+version: 1.15.0
+date-released: '2026-10-20'
 preferred-citation:
   type: article
   title: >-
